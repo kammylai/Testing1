@@ -21,6 +21,7 @@
             // Set handlers for the various buttons on the page
             Sfdc.canvas(function() {
                 $('#finalizeButton').click(finalizeHandler);
+                $('#finalizeButton1').click(finalizeHandler);
                 $('#deleteButton').click(deleteHandler);
             });
 
@@ -133,6 +134,7 @@
                     <c:when test="${empty signedRequestJson}">
                         <button onclick="location.href='/orderui'">Back</button>
                         <button id="deleteButton">Delete Order</button>
+                        <button id="finalizeButton1">Finalize</button>
                     </c:when>
                     <c:otherwise>
                         <c:if test="${invoice.status ne 'Shipped'}">
