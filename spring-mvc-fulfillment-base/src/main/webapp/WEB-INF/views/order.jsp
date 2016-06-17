@@ -50,11 +50,10 @@
             //Update Status field in Heroku Web Page
             function finalizeHandler1(){
                 var invoiceUri=sr.context.links.sobjectUrl + "Vehicle_Order__c/${order.id}";
-                alert(invoiceUri);
                 var body = {"Status__c":"Shipped"};
                 Sfdc.canvas.client.ajax(invoiceUri,{
                     client : sr.client,
-                    method: 'PATCH',
+                    method: 'POST',
                     contentType: "application/json",
                     data: JSON.stringify(body),
                     success : function() {
