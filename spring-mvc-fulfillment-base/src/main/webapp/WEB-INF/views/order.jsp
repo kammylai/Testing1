@@ -30,7 +30,7 @@
             // Status__c field to "Shipped".  If successful, the page is refreshed,
             // and if there is an error it will alert the user.
             function finalizeHandler(){
-                var invoiceUri=sr.context.links.sobjectUrl + "Invoice__c/${order.id}";
+                var invoiceUri=sr.context.links.sobjectUrl + "Vehicle_Order__c/${order.id}";
                 var body = {"Status__c":"Shipped"};
                 Sfdc.canvas.client.ajax(invoiceUri,{
                     client : sr.client,
