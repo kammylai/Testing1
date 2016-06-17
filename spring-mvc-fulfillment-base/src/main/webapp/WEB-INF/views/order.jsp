@@ -49,8 +49,9 @@
             
             //Update Status field in Heroku Web Page
             function finalizeHandler1(){
+            	alert("invoiceUri");
                 var invoiceUri=sr.context.links.sobjectUrl + "Vehicle_Order__c/${order.id}";
-                alert("invoiceUri");
+                
                 var body = {"Status__c":"Shipped"};
                 Sfdc.canvas.client.ajax(invoiceUri,{
                     client : sr.client,
@@ -69,7 +70,6 @@
             // This function will be fred when the "Delete Order" button is clicked.
             // It will delete the record from the Heroku database.
             function deleteHandler(){
-            alert("Error deleting order ${order.orderId}"); //testing by kammy
                 $.deleteJSON("/order/${order.orderId}", function(data) {
                     alert("Deleted order ${order.orderId}");
                     location.href = "/orderui";
