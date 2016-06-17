@@ -94,6 +94,79 @@ public class OrderController {
 		orderService.removeOrder(orderId);
 	}
 	
+	//Kammy start:
+	@RequestMapping(method=RequestMethod.POST)
+	public @ResponseBody List<? extends Object> create(@Valid @RequestBody Order[] orders, HttpServletResponse response) {
+		initParams = { 
+		@WebInitParam(name = "clientId", value = 
+				"3MVG9ZL0ppGP5UrCwpSxUGhAMnfBs36FlDfQp8OWfxNJI_bmnj5q3K1DYCM3WAUuFnTuwzNxiY3vMNpFlCFBZ"),
+		@WebInitParam(name = "clientSecret", value = "3474700791504880027"),
+		@WebInitParam(name = "redirectUri", value = 
+				"https://aqueous-shore-92031.herokuapp.com/_auth"),
+		@WebInitParam(name = "environment", value = 
+				"https://elufa-sdfc-poc-dev-ed.my.salesforce.com/services/oauth2/token")  }
+		 
+		HttpClient httpclient = new HttpClient();
+		PostMethod post = new PostMethod(environment);
+		post.addParameter("code",code);
+		post.addParameter("grant_type","authorization_code");
+
+		   /** For session ID instead of OAuth 2.0, use "grant_type", "password" **/
+		post.addParameter("client_id",3MVG9ZL0ppGP5UrCwpSxUGhAMnfBs36FlDfQp8OWfxNJI_bmnj5q3K1DYCM3WAUuFnTuwzNxiY3vMNpFlCFBZ);
+		post.addParameter("client_secret",3474700791504880027);
+		post.addParameter("redirect_uri",https://aqueous-shore-92031.herokuapp.com/_auth);
+		
+		
+	   //exception handling removed for brevity...
+	  //this is the post from step 2     
+	  httpclient.executeMethod(post);
+		 String responseBody = post.getResponseBodyAsString();
+	   
+	  String accessToken = null;
+	  JSONObject json = null;
+	   try {
+		   json = new JSONObject(responseBody);
+			 accessToken = json.getString("access_token");
+			 issuedAt = json.getString("issued_at");
+			 /** Use this to validate session 
+			  * instead of expiring on browser close.
+			  */
+									
+		 } catch (JSONException e) {
+				e.printStackTrace();
+		 }
+ 
+		 HttpServletResponse httpResponse = (HttpServletResponse)response;
+		  Cookie session = new Cookie(ACCESS_TOKEN, accessToken);
+		 session.setMaxAge(-1); //cookie not persistent, destroyed on browser exit
+		 httpResponse.addCookie(session);
+		
+		
+		
+		  PostMethod m = new PostMethod("https://elufa-sdfc-poc-dev-ed.my.salesforce.com/a0D" +  "?_HttpMethod=PATCH");
+			
+		  m.setRequestHeader("Authorization", "OAuth " + accessToken);
+
+		  Map<String, Object> accUpdate = new HashMap<String, Object>();
+		  accUpdate.put("Status__c", "Patch test");
+		  ObjectMapper mapper = new ObjectMapper();
+		  m.setRequestEntity(new StringRequestEntity(mapper.writeValueAsString(accUpdate), "application/json", "UTF-8"));
+
+		  HttpClient c = new HttpClient();
+		  int sc = c.executeMethod(m);
+		  System.out.println("PATCH call returned a status code of " + sc);
+		  if (sc > 299) {
+			// deserialize the returned error message
+			List<ApiError> errors = mapper.readValue(m.getResponseBodyAsStream(), new TypeReference<List<ApiError>>() {} );
+			for (ApiError e : errors)
+			  System.out.println(e.errorCode + " " + e.message);
+		  }
+	}
+
+	
+	
+	//Kammy end.
+	
 	// internal helper
 	private Map<String, String> validationMessages(Set<ConstraintViolation<Order>> failureSet) {
 		Map<String, String> failureMessageMap = new HashMap<String, String>();
