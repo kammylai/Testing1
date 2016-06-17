@@ -72,7 +72,6 @@
             // It will delete the record from the Heroku database.
             function deleteHandler(){
                 $.deleteJSON("/order/${order.orderId}", function(data) {
-                    alert("Deleted order ${order.orderId}");
                     location.href = "/orderui";
                 }, function(data) {
                     alert("Error deleting order ${order.orderId}");
