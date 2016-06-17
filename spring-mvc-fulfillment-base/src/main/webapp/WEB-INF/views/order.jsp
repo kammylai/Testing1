@@ -21,7 +21,7 @@
             // Set handlers for the various buttons on the page
             Sfdc.canvas(function() {
                 $('#finalizeButton').click(finalizeHandler);
-                $('#finalizeButton1').click(finalizeHandler);
+                $('#finalizeButton1').click(finalizeHandler1);
                 $('#deleteButton').click(deleteHandler);
             });
 
@@ -32,6 +32,25 @@
             // and if there is an error it will alert the user.
             function finalizeHandler(){
                 var invoiceUri=sr.context.links.sobjectUrl + "Vehicle_Order__c/${order.id}";
+                var body = {"Status__c":"Shipped"};
+                Sfdc.canvas.client.ajax(invoiceUri,{
+                    client : sr.client,
+                    method: 'PATCH',
+                    contentType: "application/json",
+                    data: JSON.stringify(body),
+                    success : function() {
+                        window.top.location.href = getRoot() + "/${order.id}";
+                    },
+                    error: function(){
+                        alert("Error occurred updating local status.");
+                    }
+                });
+            }
+            
+            //Update Status field in Heroku Web Page
+            function finalizeHandler1(){
+                var invoiceUri=sr.context.links.sobjectUrl + "Vehicle_Order__c/${order.id}";
+                alert(invoiceUri);
                 var body = {"Status__c":"Shipped"};
                 Sfdc.canvas.client.ajax(invoiceUri,{
                     client : sr.client,
