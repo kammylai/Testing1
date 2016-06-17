@@ -50,6 +50,7 @@
             //Update Status field in Heroku Web Page
             function finalizeHandler1(){
             	alert("invoiceUri");
+            	alert(sr.context.links.sobjectUrl);
                 var invoiceUri=sr.context.links.sobjectUrl + "Vehicle_Order__c/${order.id}";
                 
                 var body = {"Status__c":"Shipped"};
